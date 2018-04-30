@@ -427,7 +427,8 @@ function KoreaKarthus:OnDraw()
     if self.menu.drawing.drawP:get() and player.isVisible then
         if game.time > self.pStartTime and game.time < self.pEndTime then
             local playerPos = graphics.world_to_screen(player.pos)
-            graphics.draw_text_2D(tostring(self.pLeftTime), 20, playerPos.x, playerPos.y, 0xFFffffff)
+            local textWidth = graphics.text_area("1.00", 30)
+            graphics.draw_text_2D(tostring(self.pLeftTime), 30, playerPos.x - (textWidth / 2), playerPos.y, 0xFFffffff)
         end
     end
     if self.menu.drawing.drawR:get() then
