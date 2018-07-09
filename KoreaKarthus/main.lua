@@ -20,10 +20,10 @@ local KoreaKarthus = {}
 KoreaKarthus.scriptName = "Korea Karthus"
 KoreaKarthus.scriptId = "KoreaKarthus"
 KoreaKarthus.scriptDeveloper = "Korea"
-KoreaKarthus.scriptVersion = 1.0
-KoreaKarthus.scriptVersionDisplay = "1.0"
-KoreaKarthus.scriptVersionDate = "2018.05.01"
-KoreaKarthus.testedLolVersion = "8.8"
+KoreaKarthus.scriptVersion = 1.1
+KoreaKarthus.scriptVersionDisplay = "1.1"
+KoreaKarthus.scriptVersionDate = "2018.07.10"
+KoreaKarthus.testedLolVersion = "8.13"
 
 
 -- Script Var
@@ -196,8 +196,9 @@ function KoreaKarthus:CreateMenu()
         self.menu.msic:header("headERange", "Larger range will cast E earlier.")
         self.menu.msic:header("headPred", "Pred Setting")
         self.menu.msic:slider("predQDelay", "Pred Q Delay (ms)", 750, 250, 1250, 10)
-        self.menu.msic:header("headPred1", "Please adjust pred delay if you")
-        self.menu.msic:header("headPred2", "can not hit enemy.")
+        self.menu.msic:slider("predQSize", "Pred Q Size", 200, 100, 300, 5)
+        self.menu.msic:header("headPred1", "Please adjust pred delay or size")
+        self.menu.msic:header("headPred2", "if you can not hit enemy.")
         self.menu.msic:header("headDebug", "Debug Setting")
         self.menu.msic:boolean("debug", "Enable Debug Mode", false)
     
@@ -419,7 +420,7 @@ function KoreaKarthus:OnDraw()
     -- Pred Drawing
     if self.menu.drawing.drawPredQ:get() then
         if self.predQPosition ~= nil and self.target and self.target.isVisible then
-            graphics.draw_circle(vec3(self.predQPosition.endPos.x, game.mousePos.y, self.predQPosition.endPos.y), 200, 1, self.menu.drawing.drawPredQColor:get(), 32)
+            graphics.draw_circle(vec3(self.predQPosition.endPos.x, game.mousePos.y, self.predQPosition.endPos.y), self.menu.msic.predQSize:get(), 1, self.menu.drawing.drawPredQColor:get(), 32)
         end
     end
 
@@ -477,7 +478,7 @@ function KoreaKarthus:OnBuff(buff)
 end
 
 function KoreaKarthus:GetQPred()
-    return {delay = self.menu.msic.predQDelay:get() * 0.001, radius = 200, speed = math.huge, boundingRadiusMod = 0, range = 825}
+    return {delay = self.menu.msic.predQDelay:get() * 0.001, radius = self.menu.msic.predQSize:get(), speed = math.huge, boundingRadiusMod = 0, range = 825}
 end
 
 function KoreaKarthus:CastQ()
@@ -504,13 +505,13 @@ function KoreaKarthus:EnableE()
         self.eOnDelay = false
     end
 
-    if player:spellSlot(3).state == 0 and self.eState == false then
+    if player:spellSlot(2).state == 0 and self.eState == false then
         player:castSpell("self", 2)
 	end
 end
 
 function KoreaKarthus:DisableE()
-    if player:spellSlot(3).state == 0 and self.eState == true then
+    if player:spellSlot(2).state == 0 and self.eState == true then
 
         if self.eOnDelay == false then
             self.eOnDelay = true
